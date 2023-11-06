@@ -53,31 +53,31 @@ const average = (arr) =>
 export default function App() {
   const [movies, setMovies] = useState(tempMovieData);
   const [watched, setWatched] = useState(tempWatchedData);
-  const [isLoading, setIsLoading] = useState()
+  const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(function ()  {
+  useEffect(function () {
     async function getMovies() {
+      setIsLoading(true);
       const response = await fetch(
-        "https://www.omdbapi.com/?s=scary&apikey=6cf2e016"
-        );
-      const data = await response.json()
+        `https://www.omdbapi.com/?s=hobbit&apikey=6cf2e016`
+      );
+      const data = await response.json();
       setMovies(data.Search);
+      setIsLoading(false);
     }
     getMovies();
   }, []);
 
   return (
     <>
-      <h1>Hello FSW2</h1>
+      <h1>Hello FSW2 di versi 2</h1>
       <NavBar>
         <Search />
         <NumResults movies={movies} />
       </NavBar>
 
       <Main>
-        <Box>
-          <MovieList movies={movies} />
-        </Box>
+        <Box>{isLoading ? <Loader /> : <MovieList movies={movies} />}</Box>
 
         <Box>
           <WatchedSummary watched={watched} />
@@ -86,6 +86,10 @@ export default function App() {
       </Main>
     </>
   );
+}
+
+function Loader() {
+  return <p className="loader">Loading.....</p>;
 }
 
 function NavBar({ children }) {
